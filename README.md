@@ -31,4 +31,6 @@ python Face-Recognition-Python-Project.py
 
 ## Configuration
 -Make sure to provide the correct path to the Haar Cascade XML file in the face_cascade variable:
-```face_cascade = cv2.CascadeClassifier("path/to/haarcascade_frontalface_default.xml")
+```bash
+face_cascade = cv2.CascadeClassifier("path/to/haarcascade_frontalface_default.xml")
+```
