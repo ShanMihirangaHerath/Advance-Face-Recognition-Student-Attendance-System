@@ -11,21 +11,22 @@ This Python script uses the OpenCV library to perform real-time face detection i
 
 ```bash
 pip install opencv-python
+```
 
 ## Usage
 
 -Clone this repository:
 ```bash
 git@github.com:ShanMihirangaHerath/Face-Recognition-Python-Project.git
-
+```
 -Navigate to the project directory:
 ```bash
 cd Face-Recognition-Python-Project
-
+```
 -Run the script:
 ```bash
 python Face-Recognition-Python-Project.py
-
+```
 -Press the 'a' key to exit the program.
 
 ## Configuration
