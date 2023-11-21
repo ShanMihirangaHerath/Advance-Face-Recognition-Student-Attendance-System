@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
+from student import Student
 
 class FaceRecognitionSystem:
     def __init__(self, root):
@@ -50,9 +51,9 @@ class FaceRecognitionSystem:
         img4 = img4.resize((200, 200),Image.ADAPTIVE)
         self.photoimg4 = ImageTk.PhotoImage(img4)
 
-        b1=Button(bg_img,image=self.photoimg4,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg4,command=self.student_details,cursor="hand2")
         b1.place(x=200,y=100,width=200,height=200)
-        b1_1=Button(bg_img,text="Student Details",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
+        b1_1=Button(bg_img,text="Student Details",command=self.student_details,cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
         b1_1.place(x=200,y=300,width=200,height=40)
 
         # Detect face Button
@@ -124,6 +125,11 @@ class FaceRecognitionSystem:
         b1.place(x=1100,y=400,width=200,height=200)
         b1_1=Button(bg_img,text="Exit",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
         b1_1.place(x=1100,y=600,width=200,height=40)
+
+        # ==========================Function Buttons============================
+    def student_details(self):
+        self.new__window=Toplevel(self.root)
+        self.app=Student(self.new__window)
 
 if __name__ == "__main__":
     root = Tk()
