@@ -119,7 +119,7 @@ class Student:
 
         # class student information
         class_student_frame=LabelFrame(Left_frame,bd=2,bg="white",relief=RIDGE,text="Class Student Information",font=("times new roman",14))
-        class_student_frame.place(x=0, y=260,width=747, height=280)
+        class_student_frame.place(x=0, y=250,width=747, height=290)
 
         # student Id
         studentId_label=Label(class_student_frame,text="StudentID:",font=("times new roman",12,"bold"),bg="white")
@@ -139,7 +139,7 @@ class Student:
         class_div_label=Label(class_student_frame,text="Class division:",font=("times new roman",12,"bold"),bg="white")
         class_div_label.grid(row=1, column=0,padx=10,pady=5,sticky=W)
 
-        class_div_combo=ttk.Combobox(class_student_frame,textvariable=self.var_div,font=("times new roman",12,"bold"),width=25,height=10,state="readonly")
+        class_div_combo=ttk.Combobox(class_student_frame,textvariable=self.var_div,font=("times new roman",12,"bold"),width=25,height=5,state="readonly")
         class_div_combo["values"]=("Select Division","A","B","C")
         class_div_combo.current(0)
         class_div_combo.grid(row=1, column=1,padx=2,pady=10,sticky=W)
@@ -155,7 +155,7 @@ class Student:
         gender_label=Label(class_student_frame,text="Gender:",font=("times new roman",12,"bold"),bg="white")
         gender_label.grid(row=2, column=0,padx=10,pady=5,sticky=W)
 
-        gender_combo=ttk.Combobox(class_student_frame,textvariable=self.var_gender,font=("times new roman",12,"bold"),width=25,state="readonly")
+        gender_combo=ttk.Combobox(class_student_frame,textvariable=self.var_gender,font=("times new roman",12,"bold"),width=25,height=5,state="readonly")
         gender_combo["values"]=("Select Gender","Male","Female")
         gender_combo.current(0)
         gender_combo.grid(row=2, column=1,padx=2,pady=10,sticky=W)
@@ -205,7 +205,7 @@ class Student:
 
         # buttons frame
         btn_frame=Frame(class_student_frame,bd=2,relief=RIDGE,bg="white")
-        btn_frame.place(x=15,y=190,width=700,height=30)
+        btn_frame.place(x=15,y=212,width=700,height=30)
 
         # save button
         save_button=Button(btn_frame,text="Save",command=self.add_data,width=19,font=("times new roman",12),bg="green",fg="white")
@@ -216,16 +216,16 @@ class Student:
         update_button.grid(row=0, column=1)
 
         # delete button
-        delete_button=Button(btn_frame,text="Delete",width=18,font=("times new roman",12),bg="red",fg="white")
+        delete_button=Button(btn_frame,text="Delete",command=self.delete_data,width=18,font=("times new roman",12),bg="red",fg="white")
         delete_button.grid(row=0, column=2)
 
         # reset button
-        reset_button=Button(btn_frame,text="Reset",width=18,font=("times new roman",12),bg="orange",fg="white")
+        reset_button=Button(btn_frame,text="Reset",command=self.reset_data,width=18,font=("times new roman",12),bg="orange",fg="white")
         reset_button.grid(row=0, column=3)
 
         # buttons frame1
         btn_frame1=Frame(class_student_frame,bd=2,relief=RIDGE,bg="white")
-        btn_frame1.place(x=15,y=222,width=700,height=30)
+        btn_frame1.place(x=15,y=240,width=700,height=30)
 
         # take pkoto
         take_photo_button=Button(btn_frame1,text="Take Photo",width=38,font=("times new roman",12),bg="gray",fg="white")
@@ -442,6 +442,53 @@ class Student:
                         return
             except Exception as es:
                 messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+
+    # ============Delete Data Function==========================
+    def delete_data(self):
+        if self.var_std_id.get()=="":
+            messagebox.showerror("Error","Student Must Have BeRequired",parent=self.root)
+        else:
+            try:
+                delete=messagebox.askyesno("Student Delete Page","Do You Want To Delete This Student",parent=self.root)
+                if delete > 0:
+                    conn = mysql.connector.connect(
+                        host="localhost",
+                        username="root",
+                        password="Shan_200630103728",
+                        database="face-recognizer",
+                    )
+                    my_cursor = conn.cursor()
+                    sql="DELETE FROM `face-recognizer`.student WHERE student_id=%s"
+                    val=(self.var_std_id.get(),)
+                    my_cursor.execute(sql,val)
+                else:
+                    if not delete:
+                        return
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+                messagebox.showinfo("Delete","Successfully Delete Student Details",parent=self.root)
+            except EXCEPTION as es:
+                messagebox.showerror("Error",f"Due To:{str(es)}",parent=self.root)
+
+    # =====================Reset==================
+    def reset_data(self):
+        self.var_dep.set("Select Department")
+        self.var_course.set("Select Course")
+        self.var_year.set("Select Year")
+        self.var_semester.set("Select Semester")
+        self.var_std_id.set("")
+        self.var_std_name.set("")
+        self.var_div.set("Select Division")
+        self.var_roll.set("")
+        self.var_gender.set("Select Gender")
+        self.var_dob.set("")
+        self.var_emil.set("")
+        self.var_phone.set("")
+        self.var_address.set("")
+        self.var_teacher.set("")
+        self.var_radio1.set("")
+
 
 
 if __name__ == "__main__":
