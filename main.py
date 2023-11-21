@@ -2,6 +2,8 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from student import Student
+import os
+import subprocess
 
 class FaceRecognitionSystem:
     def __init__(self, root):
@@ -101,9 +103,9 @@ class FaceRecognitionSystem:
         img9 = img9.resize((200, 200),Image.ADAPTIVE)
         self.photoimg9 = ImageTk.PhotoImage(img9)
 
-        b1=Button(bg_img,image=self.photoimg9,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg9,cursor="hand2",command=self.open_image)
         b1.place(x=500,y=400,width=200,height=200)
-        b1_1=Button(bg_img,text="Photos",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
+        b1_1=Button(bg_img,text="Photos",cursor="hand2",command=self.open_image, font=("times new roman",20,"bold"),bg="black",fg="white")
         b1_1.place(x=500,y=600,width=200,height=40)
 
         # Developer Button
@@ -125,6 +127,16 @@ class FaceRecognitionSystem:
         b1.place(x=1100,y=400,width=200,height=200)
         b1_1=Button(bg_img,text="Exit",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
         b1_1.place(x=1100,y=600,width=200,height=40)
+
+    def open_image(self):
+        directory_path = r"C:\Users\Solo Coder\Face-Recognition-Python-Project\Face-Recognition-Python-Project-1\data"
+
+        try:
+            subprocess.Popen(["explorer", directory_path])
+        except FileNotFoundError:
+            print(f"Error: The directory '{directory_path}' does not exist.")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
 
         # ==========================Function Buttons============================
     def student_details(self):
