@@ -1,6 +1,8 @@
 from tkinter import Tk, Label, Button, messagebox
 from tkinter import PhotoImage
 from PIL import Image, ImageTk
+from time import strftime
+from datetime import datetime
 import os
 import cv2
 import numpy as np
@@ -46,6 +48,24 @@ class Face_Recognition:
             fg="white",
         )
         b1_1.place(x=500, y=550, width=500, height=60)
+    # =====================attendence=====================
+    def mark_attendence(self, i, n, r, d):
+        with open("attenden.csv", "r+", newline="\n") as f:
+            myDataList = f.readlines()
+            name_list = []
+
+            for line in myDataList:
+                entry = line.split(",")
+                name_list.append(entry[0])
+
+            if (i not in name_list) and (n not in name_list) and (r not in name_list) and (d not in name_list):
+                now = datetime.now()
+                d1 = now.strftime("%d/%m/%Y")
+                dtString = now.strftime("%H:%M:%A")
+                data = f"{i},{n},{r},{d},{dtString},{d1},Present\n"
+                f.write(data)
+
+
 
     # ==================face recognition================
     def face_recog(self):
@@ -88,11 +108,20 @@ class Face_Recognition:
                 d = my_cursor.fetchone()
                 d = "+".join(d)
 
+                my_cursor.execute(
+                    "SELECT `student_id` FROM `face-recognizer`.student WHERE student_id="
+                    + str(id)
+                )
+                i = my_cursor.fetchone()
+                i = "+".join(i)
+
+
+
                 if confidence > 77:
                     cv2.putText(
                         img,
-                        f"Roll:{r}",
-                        (x, y - 55),
+                        f"ID:{i}",
+                        (x, y - 75),
                         cv2.FONT_HERSHEY_COMPLEX,
                         0.8,
                         (255, 255, 255),
@@ -109,6 +138,15 @@ class Face_Recognition:
                     )
                     cv2.putText(
                         img,
+                        f"Roll:{r}",
+                        (x, y - 55),
+                        cv2.FONT_HERSHEY_COMPLEX,
+                        0.8,
+                        (255, 255, 255),
+                        3,
+                    )
+                    cv2.putText(
+                        img,
                         f"Department:{d}",
                         (x, y - 5),
                         cv2.FONT_HERSHEY_COMPLEX,
@@ -116,6 +154,7 @@ class Face_Recognition:
                         (255, 255, 255),
                         3,
                     )
+                    self.mark_attendence(i,n,r,d)
                 else:
                     cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 3)
                     cv2.putText(
@@ -151,6 +190,12 @@ class Face_Recognition:
 
         video_cap.release()
         cv2.destroyAllWindows()
+
+        # Display a message box after recognition is completed
+        messagebox.showinfo("Recognition Completed", "Face recognition completed!")
+
+        # Close the Tkinter window
+        self.root.quit()
 
 
 if __name__ == "__main__":
