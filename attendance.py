@@ -8,22 +8,30 @@ from tkinter import (
     PhotoImage,
     ttk,
     StringVar,
+    filedialog,
+    messagebox,
 )
 from tkinter import *
 from PIL import Image, ImageTk
-from time import strftime
-from datetime import datetime
 import os
-import cv2
-import numpy as np
-import mysql.connector
+import csv
 
+mydata = []
 
 class Attendence:
     def __init__(self, root):
         self.root = root
         self.root.geometry("800x600")
         self.root.title("Attendence Management System")
+
+        # Variables
+        self.var_atten_id = StringVar()
+        self.var_atten_name = StringVar()
+        self.var_atten_roll = StringVar()
+        self.var_atten_dep = StringVar()
+        self.var_atten_time = StringVar()
+        self.var_atten_date = StringVar()
+        self.var_atten_attendance = StringVar()
 
         # Add missing variable definition
         self.var_std_id = StringVar()
@@ -79,6 +87,7 @@ class Attendence:
         Attendence_ID_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_id,
             font=("times new roman", 12, "bold"),
         )
         Attendence_ID_entry.grid(row=0, column=1, padx=10, pady=5)
@@ -94,6 +103,7 @@ class Attendence:
         Name_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_name,
             font=("times new roman", 12, "bold"),
         )
         Name_entry.grid(row=1, column=1, padx=10, pady=5)
@@ -109,6 +119,7 @@ class Attendence:
         Roll_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_roll,
             font=("times new roman", 12, "bold"),
         )
         Roll_entry.grid(row=2, column=1, padx=10, pady=5)
@@ -124,6 +135,7 @@ class Attendence:
         Department_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_dep,
             font=("times new roman", 12, "bold"),
         )
         Department_entry.grid(row=3, column=1, padx=10, pady=5)
@@ -139,6 +151,7 @@ class Attendence:
         Date_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_date,
             font=("times new roman", 12, "bold"),
         )
         Date_entry.grid(row=4, column=1, padx=10, pady=5)
@@ -154,6 +167,7 @@ class Attendence:
         Time_entry = ttk.Entry(
             Left_inside_frame,
             width=56,
+            textvariable=self.var_atten_time,
             font=("times new roman", 12, "bold"),
         )
         Time_entry.grid(row=5, column=1, padx=10, pady=5)
@@ -167,7 +181,11 @@ class Attendence:
         )
         Attendence_label.grid(row=6, column=0, padx=10, pady=5)
         self.atten_status = ttk.Combobox(
-            Left_inside_frame, width=54, font=("comicsansns", 11, "bold"), state="readonly"
+            Left_inside_frame,
+            width=54,
+            textvariable=self.var_atten_attendance,
+            font=("comicsansns", 11, "bold"),
+            state="readonly",
         )
         self.atten_status["values"] = ("Status", "Present", "Absent")
         self.atten_status.grid(row=6, column=1, pady=8)
@@ -179,6 +197,7 @@ class Attendence:
             text="Import CSV",
             width=200,
             font=("times new roman", 12, "bold"),
+            command=self.importCsv,
             bg="green",
             fg="white",
         )
@@ -190,6 +209,7 @@ class Attendence:
             text="Export CSV",
             width=200,
             font=("times new roman", 12),
+            command=self.exportCsv,
             bg="blue",
             fg="white",
         )
@@ -211,6 +231,7 @@ class Attendence:
             self.root,
             text="Reset",
             width=18,
+            command=self.reset_data,
             font=("times new roman", 12),
             bg="orange",
             fg="white",
@@ -228,42 +249,113 @@ class Attendence:
         )
         Right_frame.place(x=747, y=10, width=747, height=700)
 
-        table_frame = Frame(Right_frame,bd=2,relief=RIDGE,bg="white")
-        table_frame.place(x=0, y=5, width=744,height=550)
+        table_frame = Frame(Right_frame, bd=2, relief=RIDGE, bg="white")
+        table_frame.place(x=0, y=5, width=744, height=550)
 
         # ===================Scroll bar table=================
-        scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
-        scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
+        scroll_x = ttk.Scrollbar(table_frame, orient=HORIZONTAL)
+        scroll_y = ttk.Scrollbar(table_frame, orient=VERTICAL)
 
-        self.AttendenceReportTable=ttk.Treeview(table_frame, column=("id","name","roll","department","time","date","attendance"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+        self.AttendenceReportTable = ttk.Treeview(
+            table_frame,
+            column=("id", "name", "roll", "department", "time", "date", "attendance"),
+            xscrollcommand=scroll_x.set,
+            yscrollcommand=scroll_y.set,
+        )
 
-        scroll_x.pack(side=BOTTOM,fill=X)
-        scroll_y.pack(side=RIGHT,fill=Y)
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
 
         scroll_x.config(command=self.AttendenceReportTable.xview)
         scroll_y.config(command=self.AttendenceReportTable.yview)
 
-        self.AttendenceReportTable.heading("id",text="Attendance ID")
-        self.AttendenceReportTable.heading("name",text="Name")
-        self.AttendenceReportTable.heading("roll",text="Roll")
-        self.AttendenceReportTable.heading("department",text="Departmet")
-        self.AttendenceReportTable.heading("time",text="Time")
-        self.AttendenceReportTable.heading("date",text="Date")
-        self.AttendenceReportTable.heading("attendance",text="Attendance")
+        self.AttendenceReportTable.heading("id", text="Attendance ID")
+        self.AttendenceReportTable.heading("name", text="Name")
+        self.AttendenceReportTable.heading("roll", text="Roll")
+        self.AttendenceReportTable.heading("department", text="Departmet")
+        self.AttendenceReportTable.heading("time", text="Time")
+        self.AttendenceReportTable.heading("date", text="Date")
+        self.AttendenceReportTable.heading("attendance", text="Attendance")
 
         self.AttendenceReportTable["show"] = "headings"
-        self.AttendenceReportTable.column("id",width=100)
-        self.AttendenceReportTable.column("name",width=100)
-        self.AttendenceReportTable.column("roll",width=100)
-        self.AttendenceReportTable.column("department",width=100)
-        self.AttendenceReportTable.column("time",width=100)
-        self.AttendenceReportTable.column("date",width=100)
-        self.AttendenceReportTable.column("attendance",width=100)
+        self.AttendenceReportTable.column("id", width=100)
+        self.AttendenceReportTable.column("name", width=100)
+        self.AttendenceReportTable.column("roll", width=100)
+        self.AttendenceReportTable.column("department", width=100)
+        self.AttendenceReportTable.column("time", width=100)
+        self.AttendenceReportTable.column("date", width=100)
+        self.AttendenceReportTable.column("attendance", width=100)
 
-        self.AttendenceReportTable.pack(fill=BOTH,expand=1)
+        self.AttendenceReportTable.pack(fill=BOTH, expand=1)
 
+        self.AttendenceReportTable.bind("<ButtonRelease>", self.get_cursor)
 
+    # ==================fetchdata =======================
+    def fetchdata(self, rows):
+        self.AttendenceReportTable.delete(*self.AttendenceReportTable.get_children())
+        for i in rows:
+            self.AttendenceReportTable.insert("", END, values=i)
 
+    def importCsv(self):
+        global mydata
+        mydata.clear()
+        fln = filedialog.askopenfilename(
+            initialdir=os.getcwd(),
+            title="Open CSV",
+            filetypes=(("CSV File", "*.csv"), ("All File", "*.*")),
+            parent=self.root,
+        )
+        with open(fln) as myfile:
+            csvread = csv.reader(myfile, delimiter=",")
+            for i in csvread:
+                mydata.append(i)
+            self.fetchdata(mydata)
+
+    # ==========================export ==========================
+    def exportCsv(self):
+        try:
+            if len(mydata) <= 1:
+                messagebox.showerror(
+                    "No Data", "No Data Found To Export", parent=self.root
+                )
+                return False
+            fln = filedialog.asksaveasfilename(
+                initialdir=os.getcwd(),
+                title="Save CSV",
+                filetypes=(("CSV File", "*.csv"), ("All File", "*.*")),
+                parent=self.root,
+            )
+            with open(fln, mode="w", newline="") as myfile:
+                exp_write = csv.writer(myfile, delimiter=",")
+                for i in mydata:
+                    exp_write.writerow(i)
+                messagebox.showinfo(
+                    "Data Export",
+                    f"Your Data Exported to {os.path.basename(fln)} Successfully",
+                )
+        except Exception as es:
+            messagebox.showerror("Error", f"Due To: {str(es)}", parent=self.root)
+
+    def get_cursor(self, event=""):
+        cursor_row = self.AttendenceReportTable.focus()
+        content = self.AttendenceReportTable.item(cursor_row)
+        rows = content['values']
+        self.var_atten_id.set(rows[0])
+        self.var_atten_name.set(rows[1])
+        self.var_atten_roll.set(rows[2])
+        self.var_atten_dep.set(rows[3])
+        self.var_atten_time.set(rows[4])
+        self.var_atten_date.set(rows[5])
+        self.var_atten_attendance.set(rows[6])
+
+    def reset_data(self):
+        self.var_atten_id.set("")
+        self.var_atten_name.set("")
+        self.var_atten_roll.set("")
+        self.var_atten_dep.set("")
+        self.var_atten_time.set("")
+        self.var_atten_date.set("")
+        self.var_atten_attendance.set("")
 
 if __name__ == "__main__":
     root = Tk()
