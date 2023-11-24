@@ -6,6 +6,7 @@ import subprocess
 from student import Student
 from train import Train
 from face_recognition import Face_Recognition
+from attendance import Attendence
 
 class FaceRecognitionSystem:
     def __init__(self, root):
@@ -75,9 +76,9 @@ class FaceRecognitionSystem:
         img6 = img6.resize((200, 200),Image.ADAPTIVE)
         self.photoimg6 = ImageTk.PhotoImage(img6)
 
-        b1=Button(bg_img,image=self.photoimg6,cursor="hand2")
+        b1=Button(bg_img,image=self.photoimg6,cursor="hand2",command=self.attendance)
         b1.place(x=800,y=100,width=200,height=200)
-        b1_1=Button(bg_img,text="Attendence",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
+        b1_1=Button(bg_img,text="Attendence",cursor="hand2",command=self.attendance,font=("times new roman",20,"bold"),bg="black",fg="white")
         b1_1.place(x=800,y=300,width=200,height=40)
 
         # Help face Button
@@ -152,6 +153,10 @@ class FaceRecognitionSystem:
     def face_recognition(self):
         self.new__window=Toplevel(self.root)
         self.app=Face_Recognition(self.new__window)
+
+    def attendance(self):
+        self.new__window=Toplevel(self.root)
+        self.app=Attendence(self.new__window)
 
 if __name__ == "__main__":
     root = Tk()
