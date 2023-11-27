@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 from PIL import Image, ImageTk
 import os
 import subprocess
@@ -57,9 +58,9 @@ class FaceRecognitionSystem:
         self.photoimg4 = ImageTk.PhotoImage(img4)
 
         b1=Button(bg_img,image=self.photoimg4,command=self.student_details,cursor="hand2")
-        b1.place(x=200,y=100,width=200,height=200)
+        b1.place(x=350,y=100,width=200,height=200)
         b1_1=Button(bg_img,text="Student Details",command=self.student_details,cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=200,y=300,width=200,height=40)
+        b1_1.place(x=350,y=300,width=200,height=40)
 
         # Detect face Button
         img5 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/face-detect-button-1.jpg")
@@ -67,9 +68,9 @@ class FaceRecognitionSystem:
         self.photoimg5 = ImageTk.PhotoImage(img5)
 
         b1=Button(bg_img,image=self.photoimg5,cursor="hand2",command=self.face_recognition)
-        b1.place(x=500,y=100,width=200,height=200)
+        b1.place(x=650,y=100,width=200,height=200)
         b1_1=Button(bg_img,text="Face Detector",cursor="hand2",command=self.face_recognition,font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=500,y=300,width=200,height=40)
+        b1_1.place(x=650,y=300,width=200,height=40)
 
         # Attendence face Button
         img6 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/attendence-button1.jpg")
@@ -77,19 +78,9 @@ class FaceRecognitionSystem:
         self.photoimg6 = ImageTk.PhotoImage(img6)
 
         b1=Button(bg_img,image=self.photoimg6,cursor="hand2",command=self.attendance)
-        b1.place(x=800,y=100,width=200,height=200)
+        b1.place(x=950,y=100,width=200,height=200)
         b1_1=Button(bg_img,text="Attendence",cursor="hand2",command=self.attendance,font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=800,y=300,width=200,height=40)
-
-        # Help face Button
-        img7 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/help-button-1.jpg")
-        img7 = img7.resize((200, 200),Image.ADAPTIVE)
-        self.photoimg7 = ImageTk.PhotoImage(img7)
-
-        b1=Button(bg_img,image=self.photoimg7,cursor="hand2")
-        b1.place(x=1100,y=100,width=200,height=200)
-        b1_1=Button(bg_img,text="Help Desk",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=1100,y=300,width=200,height=40)
+        b1_1.place(x=950,y=300,width=200,height=40)
 
         # Train Data Button
         img8 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/data-train.jpg")
@@ -97,9 +88,9 @@ class FaceRecognitionSystem:
         self.photoimg8 = ImageTk.PhotoImage(img8)
 
         b1=Button(bg_img,image=self.photoimg8,cursor="hand2",command=self.train_data)
-        b1.place(x=200,y=400,width=200,height=200)
+        b1.place(x=350,y=400,width=200,height=200)
         b1_1=Button(bg_img,text="Train Data",cursor="hand2",command=self.train_data,font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=200,y=600,width=200,height=40)
+        b1_1.place(x=350,y=600,width=200,height=40)
 
         # Photo Data Button
         img9 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/gallery-photo.jpg")
@@ -107,29 +98,19 @@ class FaceRecognitionSystem:
         self.photoimg9 = ImageTk.PhotoImage(img9)
 
         b1=Button(bg_img,image=self.photoimg9,cursor="hand2",command=self.open_image)
-        b1.place(x=500,y=400,width=200,height=200)
+        b1.place(x=650,y=400,width=200,height=200)
         b1_1=Button(bg_img,text="Photos",cursor="hand2",command=self.open_image, font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=500,y=600,width=200,height=40)
-
-        # Developer Button
-        img10 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/developer-button.jpg")
-        img10 = img10.resize((200, 200),Image.ADAPTIVE)
-        self.photoimg10 = ImageTk.PhotoImage(img10)
-
-        b1=Button(bg_img,image=self.photoimg10,cursor="hand2")
-        b1.place(x=800,y=400,width=200,height=200)
-        b1_1=Button(bg_img,text="Developer",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=800,y=600,width=200,height=40)
+        b1_1.place(x=650,y=600,width=200,height=40)
 
         # Exit Button
         img11 = Image.open("C:/Users/Solo Coder/Face-Recognition-Python-Project/Face-Recognition-Python-Project-1/collage_image/exit-button.jpg")
         img11 = img11.resize((200, 200),Image.ADAPTIVE)
         self.photoimg11 = ImageTk.PhotoImage(img11)
 
-        b1=Button(bg_img,image=self.photoimg11,cursor="hand2")
-        b1.place(x=1100,y=400,width=200,height=200)
-        b1_1=Button(bg_img,text="Exit",cursor="hand2",font=("times new roman",20,"bold"),bg="black",fg="white")
-        b1_1.place(x=1100,y=600,width=200,height=40)
+        b1=Button(bg_img,image=self.photoimg11,cursor="hand2",command=self.iExit)
+        b1.place(x=950,y=400,width=200,height=200)
+        b1_1=Button(bg_img,text="Exit",cursor="hand2",command=self.iExit,font=("times new roman",20,"bold"),bg="black",fg="white")
+        b1_1.place(x=950,y=600,width=200,height=40)
 
     def open_image(self):
         directory_path = r"C:\Users\Solo Coder\Face-Recognition-Python-Project\Face-Recognition-Python-Project-1\data"
@@ -141,6 +122,13 @@ class FaceRecognitionSystem:
         except Exception as e:
             print(f"An unexpected error occurred: {e}")
 
+    def iExit(self):
+        self.iExit=messagebox.askyesno("Face Recognition","Are You Sure Exit This Programe?")
+        if self.iExit > 0:
+            self.root.destroy()
+        else:
+            return
+        
         # ==========================Function Buttons============================
     def student_details(self):
         self.new__window=Toplevel(self.root)
